@@ -5,7 +5,7 @@ import time
 import miniirc
 import urltitle
 from urllib.parse import urlparse
-from typing import Optional, NoReturn, Tuple, List
+from typing import Tuple, List
 
 import conf
 
@@ -14,11 +14,11 @@ class URLTitleReader:
     def __init__(self) -> None:
         self._url_title_reader = urltitle.URLTitleReader(verify_ssl=True)
 
-    def title(self, url: str) -> Optional[str]:
+    def title(self, url: str):
         try:
             title = self._url_title_reader.title(url)
         except Exception as exc:
-            print("Failed to read title. %s", exc)
+            print(f"Failed to read title. {exc}")
             return False
         return title
 
@@ -59,11 +59,11 @@ def _handle_privmsg(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List
                     msg = f"{conf.TITLE_PREFIX} {title[1]}"
                     irc.msg(args[0], msg)
             else:
-                print("Skipping URL: %s" % url)
+                print(f"Skipping URL: {url}")
     return
 
 
-def _get_title(irc: miniirc.IRC, channel: str, url: str) -> Optional[Tuple[str, str, str]]:
+def _get_title(irc: miniirc.IRC, channel: str, url: str):
     url_title_reader = URLTitleReader()
 
     try:
@@ -72,7 +72,6 @@ def _get_title(irc: miniirc.IRC, channel: str, url: str) -> Optional[Tuple[str, 
         print(f"Error retrieving title for URL in message in {channel}: {exc}")
     else:
         if title:
-            print('Returning title "%s" for URL %s in message in %s.' % (title, url, channel))
             return url, title
 
     return None
