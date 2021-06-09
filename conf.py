@@ -15,7 +15,6 @@ QUIT_MSG = 'I quit!'
 TITLE_TIMEOUT   = 15
 TITLE_PREFIX    = ircstyle.style("»", fg="green", reset=True) # ⤷
 DOMAIN_BACKLIST = [
-    "domoticz",
     "127.0.0.1",
     "localhost",
     "ip6-loopback",
