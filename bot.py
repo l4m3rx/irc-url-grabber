@@ -11,7 +11,7 @@ import conf
 
 
 class URLTitleReader:
-    def __init__(self) -> None:
+    def __init__(self):
         self._url_title_reader = urltitle.URLTitleReader(verify_ssl=True)
 
     def title(self, url: str):
@@ -24,7 +24,7 @@ class URLTitleReader:
 
 
 class Bot:
-    def __init__(self) -> None:
+    def __init__(self):
         self._irc = miniirc.IRC(
             ssl           = conf.SSL,
             ip            = conf.SERVER,
@@ -42,7 +42,7 @@ class Bot:
 
 
 @miniirc.Handler("PRIVMSG", colon=False)
-def _handle_privmsg(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List[str]) -> None:
+def _handle_privmsg(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List[str]):
     #print("Handling incoming message: hostmask=%s, args=%s", hostmask, args)
     # Ignore ourself
     if hostmask[0] == conf.NICK:
