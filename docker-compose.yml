@@ -1,0 +1,25 @@
+version: '2.4'
+
+services:
+
+  url-bot:
+    build: .
+
+    container_name: url-bot
+    hostname: url-bot
+
+    restart: unless-stopped
+    cpu_shares: 50
+    mem_limit: 264M
+
+    volumes:
+     - ./conf.py:/app/conf.py
+
+    networks:
+      - bot_net
+
+
+networks:
+  bot_net:
+    driver: bridge
+

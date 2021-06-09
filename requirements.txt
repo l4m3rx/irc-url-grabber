@@ -1,0 +1,3 @@
+ircstyle==0.1.5
+urltitle==0.3.5
+miniirc==1.6.3
