@@ -9,9 +9,8 @@ from time import sleep, localtime, time
 from dateutil import parser
 from threading import Thread
 from typing import Tuple, List
-from urllib.parse import urlparse
-from urllib.parse import urlencode
 from urllib.request import urlopen
+from urllib.parse import urlparse, urlencode
 from urltitle import URLTitleReader as url_reader
 
 import conf
