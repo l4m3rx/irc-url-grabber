@@ -124,7 +124,7 @@ def _handle_privmsg(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List
                 title = get_title(irc, args[0], url)
                 if title:
                     msg = f"{conf.TITLE_PREFIX} {title[1]}"
-                    irc.msg(args[0], msg)
+                    #irc.msg(args[0], msg)
             else:
                 print(f"Skipping URL: {url}")
         # Crypto prices
