@@ -128,8 +128,9 @@ def coin_price(coin: str):
 
     pair_name = 'USDT_' + coin.upper()
     if pair_name in response.keys():
-        last_price = round( float( response[pair_name]['last'] ), 2)
-        return last_price
+        last_price = str( round( float( response[pair_name]['last'] ), 2) )
+        price_message = f"[{coin.upper()}] Current price: ${last_price}"
+        return price_message
 
     return False
 
