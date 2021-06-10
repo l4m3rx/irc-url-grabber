@@ -1,5 +1,5 @@
+requests==2.25.1
+feedparser==6.0.2
 miniirc==1.6.3
 urltitle==0.3.5
-feedparser==6.0.2
-requests==2.25.1
 python_dateutil==2.8.1

@@ -36,6 +36,10 @@ def xml_feed(rss_url: str):
             fresh = (now - entry_date) < (conf.RSS_REFRESH * 60)
             if fresh:
                 result.append([entry.title, entry.link])
+
+            if conf.DEBUG:
+                print(f"RSS {fresh} N:{now} | E:{entry_date}")
+
     except:
         print(f"Error while handleing {rss_url}")
         return result
@@ -117,16 +121,17 @@ def _handle_privmsg(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List
 
     # Watch only for channel messages
     if args[0] in conf.CHANNELS:
-        urls = find_urls(args[1])
-        # Walk URLs (if any)
-        for url in urls:
-            if stack_push(url) and validate(url):
-                title = get_title(irc, args[0], url)
-                if title:
-                    msg = f"{conf.TITLE_PREFIX} {title[1]}"
-                    #irc.msg(args[0], msg)
-            else:
-                print(f"Skipping URL: {url}")
+        if not args[0] in conf.URL_CHANNELS:
+            urls = find_urls(args[1])
+            # Walk URLs (if any)
+            for url in urls:
+                if stack_push(url) and validate(url):
+                    title = get_title(irc, args[0], url)
+                    if title:
+                        msg = f"{conf.TITLE_PREFIX} {title[1]}"
+                        irc.msg(args[0], msg)
+                else:
+                    print(f"Skipping URL: {url}")
         # Crypto prices
         try:
             if args[1].startswith('.price '):
