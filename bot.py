@@ -52,8 +52,12 @@ def rss_thread():
             print("RSS check starting...")
 
         _sleeptill = time() + (conf.RSS_REFRESH * 60)
+
         for rss_name in conf.RSS_FEEDS:
-            print("RSS Feed: %s" % rss_name)
+
+            if conf.DEBUG
+                print("RSS Feed: %s" % rss_name)
+
             for rrs_entry in xml_feed(conf.RSS_FEEDS[rss_name]):
                 msg = f"[{rss_name}] {rrs_entry[0]} --- {shorten_url(rrs_entry[1])}"
                 try:
@@ -62,10 +66,12 @@ def rss_thread():
                         sleep(2)
                 except:
                     print("Error while sending RSS feed.")
+
         sleep(time() - _sleeptill)
 
 
 class URLTitleReader:
+
     def __init__(self):
         self._url_title_reader = url_reader(verify_ssl=True)
 
@@ -79,6 +85,7 @@ class URLTitleReader:
 
 
 class Bot:
+
     def __init__(self):
         self._irc = miniirc.IRC(
             ssl           = conf.SSL,
@@ -104,7 +111,7 @@ def _handle_privmsg(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List
     if conf.DEBUG:
         print("Handling incoming message: hostmask=%s, args=%s", hostmask, args)
 
-    # Ignore ourself
+    # Ignore ourself and some other ppl :)
     if (hostmask[0] == conf.NICK) or (hostmask[0] in conf.IGNORE_NICKS):
         return
 
