@@ -46,7 +46,7 @@ def xml_feed(rss_url: str):
 def rss_thread():
     while True:
         if not conf.instance:
-            sleep(15)
+            sleep(30)
         
         if conf.DEBUG:
             print("RSS check starting...")
@@ -132,7 +132,7 @@ def _handle_privmsg(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List
             if args[1].startswith('.price '):
                 _msg = args[1].split()
                 if (len(_msg) == 2) and (_msg[1].upper() in conf.CRYPTOS):
-                    irc.msg(args[0], coin_price(_msg[1]))
+                    irc.msg(args[0], ncoin_price(_msg[1]))
         except:
             pass  # too lazy to handle it properly
 
@@ -180,21 +180,25 @@ def validate(url: str):
     return False
 
 
-def coin_price(coin: str):
+def round_it(price: float):
+    if (price < 1):
+        price = round(price, 4)
+    elif (price >= 1) and (price < 10):
+        price = round(price, 2)
+    else:
+        price = round(price, 0)
+    return price
+
+
+def ncoin_price(coin: str):
     try:
-        response = requests.get("https://poloniex.com/public?command=returnTicker").json()
+        price_usd = round_it(requests.get(f"https://rate.sx/1{coin}").json())
+        price_eur = round_it(requests.get(f"https://eur.rate.sx/1{coin}").json())
     except:
-        print("Error while trying to fetch data from poloniex.")
+        print("Error while trying to fetch data from rate.sx")
         return False
 
-    pair_name = 'USDT_' + coin.upper()
-    if pair_name in response.keys():
-        last_price = str( round( float( response[pair_name]['last'] ), 2) )
-        price_message = f"[{coin.upper()}] Current price: ${last_price}"
-        return price_message
-
-    return False
-
+    return f"[{coin.upper()}] Price: ${price_usd} / €{price_eur}"
 
 
 # 0xFF we go
