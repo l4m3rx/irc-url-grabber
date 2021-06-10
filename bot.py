@@ -121,7 +121,7 @@ def _handle_privmsg(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List
 
     # Watch only for channel messages
     if args[0] in conf.CHANNELS:
-        if not args[0] in conf.URL_CHANNELS:
+        if args[0] in conf.URL_CHANNELS:
             urls = find_urls(args[1])
             # Walk URLs (if any)
             for url in urls:
