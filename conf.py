@@ -4,7 +4,7 @@ SERVER = 'irc.libera.chat'
 PORT   = 6697
 # Bot
 NICK     = 'botnick'
-CHANNELS = ['#botchannel']
+CHANNELS = ['#randombotchan']
 PASSWORD = 'botpass'
 IDENT    = 'roBot'
 REALNAME = 'Testis'
@@ -23,6 +23,14 @@ DOMAIN_BACKLIST = [
     "ip6-localhost",
     "ip6-allrouters",
 ]
+# RSS Feed
+RSS_CHANNEL  = '#randombotchan'
+RSS_FEEDS    = {
+    'Hackaday': 'https://hackaday.com/blog/feed/',
+    'Phoronix': 'https://www.phoronix.com/rss.php',
+    'Slashdot': 'http://rss.slashdot.org/Slashdot/slashdotMain',
+}
+RSS_REFRESH  = 10
 # Other
 CRYPTOS = ['BTC', 'ETH', 'XMR', 'DOGE', 'LINK', 'BNB', 'ADA', 'DOT']
 DEBUG   = False

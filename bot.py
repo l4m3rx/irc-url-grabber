@@ -3,12 +3,66 @@
 import re
 import miniirc
 import requests
+import feedparser
+import contextlib
 from time import sleep
+from dateutil import parser
+from datetime import timedelta, datetime
+from threading import Thread
 from typing import Tuple, List
 from urllib.parse import urlparse
+from urllib.parse import urlencode
+from urllib.request import urlopen
 from urltitle import URLTitleReader as url_reader
 
 import conf
+
+
+def shorten_url(url):
+    request_url = ('http://tinyurl.com/api-create.php?' + urlencode({'url':url}))
+    try:
+        with contextlib.closing(urlopen(request_url)) as response:
+            return response.read().decode('utf-8')
+    except:
+        return url
+
+
+def xml_feed(rss_url: str):
+    result = []
+    try:
+        rss_feed = feedparser.parse(rss_url)
+        for entry in rss_feed.entries:
+            parsed_date = parser.parse(entry.updated)
+            parsed_date = (parsed_date).replace(tzinfo=None)
+            now_date = datetime.utcnow()
+            fresh = now_date - parsed_date < timedelta(minutes=conf.RSS_REFRESH)
+            if fresh:
+                result.append([entry.title, entry.link])
+    except:
+        print(f"Error while handleing {rss_url}")
+        return result
+    else:
+        return result
+
+
+def rss_thread():
+    while True:
+        if not conf.instance:
+            sleep(30)
+        
+        if conf.DEBUG:
+            print("RSS check starting...")
+
+        for rss_name in conf.RSS_FEEDS:
+            print("RSS Feed: %s" % rss_name)
+            for rrs_entry in xml_feed(conf.RSS_FEEDS[rss_name]):
+                msg = f"[{rss_name}] {rrs_entry[0]} --- {shorten_url(rrs_entry[1])}"
+                try:
+                    conf.instance.msg(conf.RSS_CHANNEL, msg)
+                    sleep(2)
+                except:
+                    print("Error while sending RSS feed.")
+        sleep(conf.RSS_REFRESH * 60)
 
 
 class URLTitleReader:
@@ -141,4 +195,5 @@ conf.url_cache = []
 conf.instance = None
 
 print("Starting...")
+Thread(target = rss_thread).start()
 b=Bot()
