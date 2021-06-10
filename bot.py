@@ -55,7 +55,7 @@ def rss_thread():
 
         for rss_name in conf.RSS_FEEDS:
 
-            if conf.DEBUG
+            if conf.DEBUG:
                 print("RSS Feed: %s" % rss_name)
 
             for rrs_entry in xml_feed(conf.RSS_FEEDS[rss_name]):
@@ -67,7 +67,7 @@ def rss_thread():
                 except:
                     print("Error while sending RSS feed.")
 
-        sleep(time() - _sleeptill)
+        sleep(_sleeptill - time())
 
 
 class URLTitleReader:
