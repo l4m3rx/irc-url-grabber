@@ -18,7 +18,7 @@ from urltitle import URLTitleReader as url_reader
 import conf
 
 
-def shorten_url(url):
+def shorten_url(url: str):
     request_url = ('http://tinyurl.com/api-create.php?' + urlencode({'url':url}))
     try:
         with contextlib.closing(urlopen(request_url)) as response:
