@@ -24,7 +24,7 @@ DOMAIN_BACKLIST = [
     "ip6-allrouters",
 ]
 # RSS Feed
-RSS_CHANNEL  = '#randombotchan'
+RSS_CHANNELS = ['#randombotchan']
 RSS_FEEDS    = {
     'Hackaday': 'https://hackaday.com/blog/feed/',
     'Phoronix': 'https://www.phoronix.com/rss.php',
@@ -33,4 +33,4 @@ RSS_FEEDS    = {
 RSS_REFRESH  = 10
 # Other
 CRYPTOS = ['BTC', 'ETH', 'XMR', 'DOGE', 'LINK', 'BNB', 'ADA', 'DOT']
-DEBUG   = False
+DEBUG   = True

@@ -58,8 +58,9 @@ def rss_thread():
             for rrs_entry in xml_feed(conf.RSS_FEEDS[rss_name]):
                 msg = f"[{rss_name}] {rrs_entry[0]} --- {shorten_url(rrs_entry[1])}"
                 try:
-                    conf.instance.msg(conf.RSS_CHANNEL, msg)
-                    sleep(2)
+                    for chan in conf.RSS_CHANNELS:
+                        conf.instance.msg(chan, msg)
+                        sleep(2)
                 except:
                     print("Error while sending RSS feed.")
         sleep(time() - _sleeptill)
