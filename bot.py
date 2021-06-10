@@ -7,7 +7,6 @@ import feedparser
 import contextlib
 from time import sleep, localtime, time
 from dateutil import parser
-from datetime import timedelta, datetime, timezone
 from threading import Thread
 from typing import Tuple, List
 from urllib.parse import urlparse
@@ -16,14 +15,6 @@ from urllib.request import urlopen
 from urltitle import URLTitleReader as url_reader
 
 import conf
-
-
-def datetime_to_local_timezone(dt):
-    epoch = dt.timestamp()
-    st_time = localtime(epoch)
-    tz = timezone(timedelta(seconds = st_time.tm_gmtoff))
-
-    return dt.astimezone(tz)
 
 
 def shorten_url(url: str):
