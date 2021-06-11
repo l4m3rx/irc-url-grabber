@@ -38,7 +38,7 @@ def xml_feed(rss_url: str):
                 result.append([entry.title, entry.link])
 
             if conf.DEBUG:
-                print(f"RSS {fresh} N:{now} | E:{entry_date}")
+                print(f"RSS {fresh} {now-entry_date}")
 
     except:
         print(f"Error while handleing {rss_url}")
