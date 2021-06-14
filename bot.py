@@ -3,11 +3,8 @@
 import re
 import miniirc
 import requests
-import feedparser
 import contextlib
-from time import sleep, localtime, time
-from dateutil import parser
-from threading import Thread
+from time import sleep
 from typing import Tuple, List
 from urllib.request import urlopen
 from urllib.parse import urlparse, urlencode
@@ -24,54 +21,6 @@ def shorten_url(url: str):
     except:
         return url
 
-
-def xml_feed(rss_url: str):
-    result = []
-    try:
-        rss_feed = feedparser.parse(rss_url)
-        for entry in rss_feed.entries:
-            now = time() 
-            entry_date = parser.parse(entry.updated).timestamp()
-
-            fresh = (now - entry_date) < (conf.RSS_REFRESH * 60)
-            if fresh:
-                result.append([entry.title, entry.link])
-
-            if conf.DEBUG:
-                print(f"RSS {fresh} {now-entry_date}")
-
-    except:
-        print(f"Error while handleing {rss_url}")
-        return result
-    else:
-        return result
-
-
-def rss_thread():
-    while True:
-        if not conf.instance:
-            sleep(30)
-        
-        if conf.DEBUG:
-            print("RSS check starting...")
-
-        _sleeptill = time() + (conf.RSS_REFRESH * 60)
-
-        for rss_name in conf.RSS_FEEDS:
-
-            if conf.DEBUG:
-                print("RSS Feed: %s" % rss_name)
-
-            for rrs_entry in xml_feed(conf.RSS_FEEDS[rss_name]):
-                msg = f"[{rss_name}] {rrs_entry[0]} --- {shorten_url(rrs_entry[1])}"
-                try:
-                    for chan in conf.RSS_CHANNELS:
-                        conf.instance.msg(chan, msg)
-                        sleep(2)
-                except:
-                    print("Error while sending RSS feed.")
-
-        sleep(_sleeptill - time())
 
 
 class URLTitleReader:
@@ -207,9 +156,7 @@ def ncoin_price(coin: str):
 
 
 # 0xFF we go
-conf.url_cache = []
 conf.instance = None
 
 print("Starting...")
-Thread(target = rss_thread).start()
 b=Bot()
