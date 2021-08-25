@@ -14,7 +14,9 @@ TITLE_TIMEOUT   = 15
 URL_STACK_SIZE  = 10
 TITLE_PREFIX    = ">>"
 URL_REGEX       = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
-IGNORE_NICKS    = ["lambot"]
+IGNORE_NICKS    = ["mainbot"]
+URL_CHANNELS    = ['#randombotchan']
+MAIN_BOT        = 'mainbot'
 DOMAIN_BACKLIST = [
     "127.0.0.1",
     "localhost",

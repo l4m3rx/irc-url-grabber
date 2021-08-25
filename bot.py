@@ -46,6 +46,7 @@ class Bot:
             port          = conf.PORT,
             nick          = conf.NICK,
             ident         = conf.IDENT,
+            debug         = conf.DEBUG,
             realname      = conf.REALNAME,
             channels      = conf.CHANNELS,
             quit_message  = conf.QUIT_MSG,
@@ -57,12 +58,29 @@ class Bot:
             sleep(123457)
 
 
+@miniirc.Handler('353', colon=False)
+def _handle_353(irc, hostmask, args):
+    _nick_list = args[-1].split()
+    if conf.MAIN_BOT in args[-1].split():
+        conf.active_bot = True
+    else:
+        conf.active_bot = False
+
+
+@miniirc.Handler('JOIN', colon=False)
+def _handle_join(irc, hostmask, args):
+    if hostmask[0] in conf.MAIN_BOT:
+        conf.active_bot = True
+
+
+@miniirc.Handler('PART', 'QUIT', 'KICK', colon=False)
+def _handle_quit(irc, hostmask, args):
+    if hostmask[0] in conf.MAIN_BOT:
+        conf.active_bot = False
+
+
 @miniirc.Handler("PRIVMSG", colon=False)
 def _handle_privmsg(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List[str]):
-
-    # Handling incoming message: hostmask=%s, args=%s ('nick', '~ident', 'host.com') ['#channel', 'message']
-    if conf.DEBUG:
-        print("Handling incoming message: hostmask=%s, args=%s", hostmask, args)
 
     # Ignore ourself and some other ppl :)
     if (hostmask[0] == conf.NICK) or (hostmask[0] in conf.IGNORE_NICKS):
@@ -78,7 +96,8 @@ def _handle_privmsg(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List
                     title = get_title(irc, args[0], url)
                     if title:
                         msg = f"{conf.TITLE_PREFIX} {title[1]}"
-                        irc.msg(args[0], msg)
+                        if not conf.active_bot:
+                            irc.msg(args[0], msg)
                 else:
                     print(f"Skipping URL: {url}")
         # Crypto prices
@@ -157,6 +176,8 @@ def ncoin_price(coin: str):
 
 # 0xFF we go
 conf.instance = None
+conf.url_cache = []
+conf.active_bot = True
 
 print("Starting...")
 b=Bot()
