@@ -49,16 +49,20 @@ class Bot:
 def _is_main_bot(hostm: str, join: bool):
     if hostm.lower().replace('+', '', '@', '') == conf.MAIN_BOT.lower():
         if join:
+            print(" == Main bot found. Going silent")
             conf.active_bot = True
         else:
+            print(" == Main not bot found.")
             conf.active_bot = False
 
 
 @miniirc.Handler('353', colon=False)
 def _handle_353(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List[str]):
     if conf.MAIN_BOT.lower() in args[-1].lower().replace('+', '', '@', '').split():
+        print(" == Main bot found. Going silent")
         conf.active_bot = True
     else:
+        print(" == Main not bot found.")
         conf.active_bot = False
 
 
