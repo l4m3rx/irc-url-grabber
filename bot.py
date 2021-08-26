@@ -13,18 +13,7 @@ from urltitle import URLTitleReader as url_reader
 import conf
 
 
-def shorten_url(url: str):
-    request_url = ('http://tinyurl.com/api-create.php?' + urlencode({'url':url}))
-    try:
-        with contextlib.closing(urlopen(request_url)) as response:
-            return response.read().decode('utf-8')
-    except:
-        return url
-
-
-
 class URLTitleReader:
-
     def __init__(self):
         self._url_title_reader = url_reader(verify_ssl=True)
 
@@ -38,7 +27,6 @@ class URLTitleReader:
 
 
 class Bot:
-
     def __init__(self):
         self._irc = miniirc.IRC(
             ssl           = conf.SSL,
@@ -58,25 +46,35 @@ class Bot:
             sleep(123457)
 
 
+def _is_main_bot(hostm: str, join: bool):
+    if hostm.lower() == conf.MAIN_BOT.lower():
+        if join:
+            conf.active_bot = True
+        else:
+            conf.active_bot = False
+
+
 @miniirc.Handler('353', colon=False)
-def _handle_353(irc, hostmask, args):
-    _nick_list = args[-1].split()
-    if conf.MAIN_BOT in args[-1].split():
+def _handle_353(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List[str]):
+    if conf.MAIN_BOT.lower() in args[-1].lower().split():
         conf.active_bot = True
     else:
         conf.active_bot = False
 
 
+@miniirc.Handler('NICK', colon=False)
+def _handle_nickchange(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List[str]):
+    pass
+
+
 @miniirc.Handler('JOIN', colon=False)
-def _handle_join(irc, hostmask, args):
-    if hostmask[0] in conf.MAIN_BOT:
-        conf.active_bot = True
+def _handle_join(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List[str]):
+    _is_main_bot(hostmask[0], join=True)
 
 
 @miniirc.Handler('PART', 'QUIT', 'KICK', colon=False)
-def _handle_quit(irc, hostmask, args):
-    if hostmask[0] in conf.MAIN_BOT:
-        conf.active_bot = False
+def _handle_quit(irc: miniirc.IRC, hostmask: Tuple[str, str, str], args: List[str]):
+    _is_main_bot(hostmask[0], join=False)
 
 
 @miniirc.Handler("PRIVMSG", colon=False)
@@ -172,6 +170,15 @@ def ncoin_price(coin: str):
         return False
 
     return f"[{coin.upper()}] Price: ${price_usd} / €{price_eur}"
+
+
+def shorten_url(url: str):
+    request_url = ('http://tinyurl.com/api-create.php?' + urlencode({'url':url}))
+    try:
+        with contextlib.closing(urlopen(request_url)) as response:
+            return response.read().decode('utf-8')
+    except:
+        return url
 
 
 # 0xFF we go
